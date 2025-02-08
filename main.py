@@ -5,7 +5,7 @@
 
 #   define memory and index
 
-# RunSimulator() function - Jonah
+# run_simulator() function - Jonah
 
 # Print user instructions - Gaby
 def print_instructions():
@@ -16,13 +16,54 @@ def print_instructions():
           "then you type in the word for that location. To stop \n"
           "input, enter -99999.")
 
-# Load user instructions - Gaby
 
+# validate() function - Jonah
 
-# Validate() function - Jonah
+# test_overflow() function - Jonah
+def test_overflow():
+    return
 
-# TestOverflow() function - Jonah
 
 # Execute() function - Gaby
+def execute():  # all elif statements with only return will be written later
+    print("***Program execution begins***")
+    while (instruction_counter < index):
+        instruction_register = memory[instruction_counter]
+        operation_code = instruction_register / 100
+        operand = instruction_register % 100
+
+        instruction_counter += 1
+
+        if operation_code == "READ":
+            print("Enter an integer:")
+            memory[operand] = int(input())
+        elif operation_code == "WRITE":
+            print(memory[operand])
+        elif operation_code == "LOAD":
+            return
+        elif operation_code == "STORE":
+            return
+        elif operation_code == "ADD":  # adds a memory address into the accumulator
+            accumulator += memory[operand]
+
+            if (test_overflow()):
+                return
+        elif operation_code == "SUBTRACT":
+            return
+        elif operation_code == "MULTIPLY":
+            return
+        elif operation_code == "DIVIDE":
+            return
+        elif operation_code == "BRANCH":
+            return
+        elif operation_code == "BRANCH_NEG":
+            return
+        elif operation_code == "BRANCH_ZERO":
+            return
+        elif operation_code == "HALT":
+            return
+        else:
+            print("Fatal error: Invalid operation code.")
+            return
 
 # Unit Tests - Cortland
