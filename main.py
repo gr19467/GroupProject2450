@@ -6,6 +6,8 @@
 #   define memory and index
 
 # run_simulator() function - Jonah
+def run_simulator():
+    pass
 
 # Print user instructions - Gaby
 def print_instructions():
@@ -18,6 +20,8 @@ def print_instructions():
 
 
 # validate() function - Jonah
+def validate():
+    pass
 
 # test_overflow() function - Jonah
 def test_overflow():
