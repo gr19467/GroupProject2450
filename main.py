@@ -17,13 +17,30 @@ class Simulator:
     HALT = 43
 
     def __init__(self):
-        self.memory = []
-        for _ in range(100):
-            self.memory.append(None)
-        self.accumulator = None
+        self.memory = [0]*100 #jonah-modified to init memory with 0s
+        self.accumulator = 0 #jonah-modified to init to 0 rather than none
         self.index = 0
 
 # run_simulator() function - Jonah
+def run_simulator():
+    simulator=Simulator()
+    print_instructions()
+    while True:
+        user_input = input(f"{simulator.index:02d} ? ")
+        if user_input == "-99999":
+            break
+        try:
+            instruction = int(user_input)
+            if validate(instruction):
+                simulator.memory[simulator.index] = instruction
+                simulator.index += 1
+            else:
+                print("Invalid instruction. Please enter a valid instruction.") #jonah-modified to add validate and error message
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+    execute(simulator)
+    
+
 
 # Print user instructions - Gaby
 def print_instructions():
@@ -36,52 +53,94 @@ def print_instructions():
 
 
 # validate() function - Jonah
+def validate(instruction):
+    operation_code = instruction // 100
+    operand = instruction % 100
+    
+    valid_operations = [
+        Simulator.READ, Simulator.WRITE, Simulator.LOAD, Simulator.STORE,
+        Simulator.ADD, Simulator.SUBTRACT, Simulator.DIVIDE, Simulator.MULTIPLY,
+        Simulator.BRANCH, Simulator.BRANCHNEG, Simulator.BRANCHZERO, Simulator.HALT
+    ]
+    
+    if operation_code not in valid_operations:
+        return False
+    
+    if operand < 0 or operand >= 100:
+        return False
+    
+    return True
 
 # test_overflow() function - Jonah
-def test_overflow():
-    return
+def test_overflow(value):
+    # Assuming a 4-digit accumulator, so the range is -9999 to 9999
+    return value < -9999 or value > 9999
 
 
 # Execute() function - Gaby
-def execute():  # all elif statements with only return will be written later
+def execute(simulator):
     print("***Program execution begins***")
-    while (instruction_counter < index):
-        instruction_register = memory[instruction_counter]
-        operation_code = instruction_register / 100
+    instruction_counter = 0
+    
+    while instruction_counter < simulator.index:
+        instruction_register = simulator.memory[instruction_counter]
+        operation_code = instruction_register // 100
         operand = instruction_register % 100
 
         instruction_counter += 1
 
-        if operation_code == "READ":
+        if operation_code == simulator.READ:
             print("Enter an integer:")
-            memory[operand] = int(input())
-        elif operation_code == "WRITE":
-            print(memory[operand])
-        elif operation_code == "LOAD":
-            return
-        elif operation_code == "STORE":
-            return
-        elif operation_code == "ADD":  # adds a memory address into the accumulator
-            accumulator += memory[operand]
-
-            if (test_overflow()):
+            simulator.memory[operand] = int(input())
+        elif operation_code == simulator.WRITE:
+            print(simulator.memory[operand])
+        elif operation_code == simulator.LOAD:
+            simulator.accumulator = simulator.memory[operand]
+        elif operation_code == simulator.STORE:
+            simulator.memory[operand] = simulator.accumulator
+        elif operation_code == simulator.ADD:
+            simulator.accumulator += simulator.memory[operand]
+            if test_overflow(simulator.accumulator):
+                print("Overflow error occurred.")
                 return
-        elif operation_code == "SUBTRACT":
-            return
-        elif operation_code == "MULTIPLY":
-            return
-        elif operation_code == "DIVIDE":
-            return
-        elif operation_code == "BRANCH":
-            return
-        elif operation_code == "BRANCH_NEG":
-            return
-        elif operation_code == "BRANCH_ZERO":
-            return
-        elif operation_code == "HALT":
+        elif operation_code == simulator.SUBTRACT:
+            simulator.accumulator -= simulator.memory[operand]
+            if test_overflow(simulator.accumulator):
+                print("Overflow error occurred.")
+                return
+        elif operation_code == simulator.MULTIPLY:
+            simulator.accumulator *= simulator.memory[operand]
+            if test_overflow(simulator.accumulator):
+                print("Overflow error occurred.")
+                return
+        elif operation_code == simulator.DIVIDE:
+            if simulator.memory[operand] == 0:
+                print("Error: Division by zero.")
+                return
+            simulator.accumulator //= simulator.memory[operand]
+        elif operation_code == simulator.BRANCH:
+            instruction_counter = operand
+        elif operation_code == simulator.BRANCHNEG:
+            if simulator.accumulator < 0:
+                instruction_counter = operand
+        elif operation_code == simulator.BRANCHZERO:
+            if simulator.accumulator == 0:
+                instruction_counter = operand
+        elif operation_code == simulator.HALT:
+            print("*** Program execution terminated ***")
             return
         else:
             print("Fatal error: Invalid operation code.")
             return
+#execute() code MODIFIED by Jonah - lmk if you want this reverted
 
 # Unit Tests - Cortland
+
+
+if __name__ == "__main__":
+    run_simulator()
+
+
+
+#Comments:
+#Jonah - I modified a couple of things fairly heavily and would like to posit that we create an alternative dev branch to resolve small issues as needed. Please let me know at the next meeting.
