@@ -1,5 +1,13 @@
 import unittest
 
+# === PM (YOU) ===
+# TODO: Oversee project progress, ensure SRS collection and final merge.
+# TODO: Manage GitHub branches and final submission.
+# TODO: Coordinate with team for code integration.
+
+# === DEV 2 (BACKEND REFACTOR) ===
+# TODO: Refactor UVSim to support GUI integration (decouple input/output).
+# TODO: Ensure all logic is modular and supports event-driven GUI interactions.
 
 class UVSim:
     def __init__(self):
@@ -23,9 +31,9 @@ class UVSim:
             opcode, operand = divmod(instruction, 100)
 
             if opcode == 10:  # READ
-                self.memory[operand] = int(input("Enter a number: "))
+                self.memory[operand] = int(input("Enter a number: "))  # === DEV 2: Replace with GUI input
             elif opcode == 11:  # WRITE
-                print(self.memory[operand])
+                print(self.memory[operand])  # === DEV 2: Replace with GUI output
             elif opcode == 20:  # LOAD
                 self.accumulator = self.memory[operand]
             elif opcode == 21:  # STORE
@@ -63,14 +71,21 @@ class UVSim:
 
             self.instruction_counter += 1
 
-
 if __name__ == "__main__":
-    # Just run the program, no tests
+    # === DEV 1 (GUI) ===
+    # TODO: Replace command-line input/output with GUI elements.
+    # TODO: Create input fields for loading files and displaying memory state.
+    # TODO: Integrate 'Run Program' button to trigger UVSim execution.
+
     sim = UVSim()
-    filename = input("Enter program file: ")
+    filename = input("Enter program file: ")  # === DEV 1: Replace with file picker in GUI
     sim.load_program(filename)
     sim.execute()
 
+
+# === DEV 3 (UNIT TESTS & SRS LEAD) ===
+# TODO: Expand unit tests to include GUI interactions.
+# TODO: Lead SRS documentation and ensure team follows functional requirements.
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):
