@@ -1,11 +1,11 @@
 import unittest
 
-# === PM (YOU) ===
+# === PM (Cortland) ===
 # TODO: Oversee project progress, ensure SRS collection and final merge.
 # TODO: Manage GitHub branches and final submission.
 # TODO: Coordinate with team for code integration.
 
-# === DEV 2 (BACKEND REFACTOR) ===
+# === DEV 2 (Gaby) ===
 # TODO: Refactor UVSim to support GUI integration (decouple input/output).
 # TODO: Ensure all logic is modular and supports event-driven GUI interactions.
 
@@ -72,7 +72,7 @@ class UVSim:
             self.instruction_counter += 1
 
 if __name__ == "__main__":
-    # === DEV 1 (GUI) ===
+    # === DEV 1 (Jonah) ===
     # TODO: Replace command-line input/output with GUI elements.
     # TODO: Create input fields for loading files and displaying memory state.
     # TODO: Integrate 'Run Program' button to trigger UVSim execution.
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     sim.execute()
 
 
-# === DEV 3 (UNIT TESTS & SRS LEAD) ===
+# === DEV 3 (James) ===
 # TODO: Expand unit tests to include GUI interactions.
 # TODO: Lead SRS documentation and ensure team follows functional requirements.
 
