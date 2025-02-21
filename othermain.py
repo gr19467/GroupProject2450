@@ -1,26 +1,11 @@
 import unittest
 
-# === PM (Cortland) ===
-# TODO: Oversee project progress, ensure SRS collection and final merge.
-# TODO: Manage GitHub branches and final submission.
-# TODO: Coordinate with team for code integration.
-
-# === DEV 2 (Gaby) ===
-# TODO: Refactor UVSim to support GUI integration (decouple input/output).
-# TODO: Ensure all logic is modular and supports event-driven GUI interactions.
-
-<<<<<<< HEAD
 class UVSim:
     def __init__(self):
         self.memory = [0] * 100  # 100-word memory
         self.accumulator = 0  # Single register
         self.instruction_counter = 0  # Program counter
         self.running = True
-=======
-# run_simulator() function - Jonah
-def run_simulator():
-    pass
->>>>>>> origin/main
 
     def load_program(self, filename):
         """Loads a program from a file into memory."""
@@ -37,9 +22,9 @@ def run_simulator():
             opcode, operand = divmod(instruction, 100)
 
             if opcode == 10:  # READ
-                self.memory[operand] = int(input("Enter a number: "))  # === DEV 2: Replace with GUI input
+                self.memory[operand] = int(input("Enter a number: "))
             elif opcode == 11:  # WRITE
-                print(self.memory[operand])  # === DEV 2: Replace with GUI output
+                print(self.memory[operand])
             elif opcode == 20:  # LOAD
                 self.accumulator = self.memory[operand]
             elif opcode == 21:  # STORE
@@ -78,100 +63,85 @@ def run_simulator():
             self.instruction_counter += 1
 
 if __name__ == "__main__":
-    # === DEV 1 (Jonah) ===
-    # TODO: Replace command-line input/output with GUI elements.
-    # TODO: Create input fields for loading files and displaying memory state.
-    # TODO: Integrate 'Run Program' button to trigger UVSim execution.
-
+    # Just run the program, no tests
     sim = UVSim()
-    filename = input("Enter program file: ")  # === DEV 1: Replace with file picker in GUI
+    filename = input("Enter program file: ")
     sim.load_program(filename)
     sim.execute()
-
-
-<<<<<<< HEAD
-# === DEV 3 (James) ===
-# TODO: Expand unit tests to include GUI interactions.
-# TODO: Lead SRS documentation and ensure team follows functional requirements.
-=======
-# validate() function - Jonah
-def validate():
-    pass
->>>>>>> origin/main
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):
         self.sim = UVSim()
-
+    
     def test_load(self):
         self.sim.memory[10] = 25
         self.sim.execute()
         self.assertEqual(self.sim.memory[10], 25)
-
+    
     def test_addition(self):
         self.sim.accumulator = 10
         self.sim.memory[5] = 15
         self.sim.memory[0] = 3005  # ADD 5
         self.sim.execute()
         self.assertEqual(self.sim.accumulator, 25)
-
+    
     def test_subtraction(self):
         self.sim.accumulator = 50
         self.sim.memory[5] = 20
         self.sim.memory[0] = 3105  # SUBTRACT 5
         self.sim.execute()
         self.assertEqual(self.sim.accumulator, 30)
-
+    
     def test_divide_by_zero(self):
         self.sim.accumulator = 50
         self.sim.memory[5] = 0
         self.sim.memory[0] = 3205  # DIVIDE 5
         self.sim.execute()
         self.assertEqual(self.sim.running, False)
-
+    
     def test_store(self):
         self.sim.accumulator = 99
         self.sim.memory[0] = 2105  # STORE 5
         self.sim.execute()
         self.assertEqual(self.sim.memory[5], 99)
-
+    
     def test_halt(self):
         self.sim.memory[0] = 4300  # HALT
         self.sim.execute()
         self.assertEqual(self.sim.running, False)
-
+    
     def test_multiply(self):
         self.sim.accumulator = 5
         self.sim.memory[5] = 4
         self.sim.memory[0] = 3305  # MULTIPLY 5
         self.sim.execute()
         self.assertEqual(self.sim.accumulator, 20)
-
+    
     def test_branch(self):
         self.sim.memory[0] = 4005  # BRANCH 5
         self.sim.memory[5] = 4300  # HALT
         self.sim.execute()
         self.assertEqual(self.sim.instruction_counter, 5)
-
+    
     def test_branchneg(self):
         self.sim.accumulator = -1
         self.sim.memory[0] = 4105  # BRANCHNEG 5
         self.sim.memory[5] = 4300  # HALT
         self.sim.execute()
         self.assertEqual(self.sim.instruction_counter, 5)
-
+    
     def test_branchzero(self):
         self.sim.accumulator = 0
         self.sim.memory[0] = 4205  # BRANCHZERO 5
         self.sim.memory[5] = 4300  # HALT
         self.sim.execute()
         self.assertEqual(self.sim.instruction_counter, 5)
-
+    
     def test_invalid_opcode(self):
         self.sim.memory[0] = 9999  # Invalid opcode
         self.sim.execute()
         self.assertEqual(self.sim.running, False)
-
+    
     def test_memory_bounds(self):
         self.sim.memory[0] = 2099  # Try to access memory location 99
         self.sim.execute()

@@ -46,4 +46,8 @@ This will automatically verify all functionalities.
 
 - **Division by zero** is detected and will halt execution.
 - **Invalid opcodes** will print an error and stop execution.
+<<<<<<< HEAD
 - **Out-of-bounds memory access** is prevented.
+=======
+- **Out-of-bounds memory access** is prevented.
+>>>>>>> origin/main

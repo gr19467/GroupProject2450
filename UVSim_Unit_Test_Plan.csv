@@ -1,0 +1,13 @@
+Test Name,Description,Use Case,Inputs,Expected Output,Success Criteria
+test_load,Tests loading a value into memory,Load Operation,Memory[10] = 25,Memory[10] = 25,Memory matches expected value
+test_addition,Tests adding a value from memory,ADD Operation,"Accumulator=10, Memory[5]=15",Accumulator=25,Sum is correct
+test_subtraction,Tests subtracting a value from memory,SUBTRACT Operation,"Accumulator=50, Memory[5]=20",Accumulator=30,Subtraction is correct
+test_divide_by_zero,Tests division by zero handling,DIVIDE Operation,"Accumulator=50, Memory[5]=0",Simulation stops,Error handled
+test_store,Tests storing accumulator value,STORE Operation,Accumulator=99,Memory[5]=99,Stored correctly
+test_halt,Tests halting execution,HALT Operation,Instruction=4300,Simulation stops,Execution stops as expected
+test_multiply,Tests multiplication,MULTIPLY Operation,"Accumulator=5, Memory[5]=4",Accumulator=20,Multiplication is correct
+test_branch,Tests branching to a specific location,BRANCH Operation,"Memory[0]=4005, Memory[5]=4300",Instruction Counter=5,Branch executed correctly
+test_branchneg,Tests branching on negative accumulator,BRANCHNEG Operation,"Accumulator=-1, Memory[0]=4105, Memory[5]=4300",Instruction Counter=5,Branch on negative executed
+test_branchzero,Tests branching on zero accumulator,BRANCHZERO Operation,"Accumulator=0, Memory[0]=4205, Memory[5]=4300",Instruction Counter=5,Branch on zero executed
+test_invalid_opcode,Tests handling of invalid opcodes,Invalid Opcode,Memory[0]=9999,Simulation stops,Unknown opcode error handled
+test_memory_bounds,Tests memory bounds access,Memory Operation,Memory[0]=2099 (accessing memory[99]),Accumulator=0,Accessed valid memory location
