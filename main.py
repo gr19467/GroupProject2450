@@ -1,13 +1,13 @@
 import unittest
 
 # === PM (Cortland) ===
-# TODO: Oversee project progress, ensure SRS collection and final merge.
-# TODO: Manage GitHub branches and final submission.
-# TODO: Coordinate with team for code integration.
+# todo: Oversee project progress, ensure SRS collection and final merge.
+# todo: Manage GitHub branches and final submission.
+# todo: Coordinate with team for code integration.
 
 # === DEV 2 (Gaby) ===
-# TODO: Refactor UVSim to support GUI integration (decouple input/output).
-# TODO: Ensure all logic is modular and supports event-driven GUI interactions.
+# todo: Refactor UVSim to support GUI integration (decouple input/output).
+# todo: Ensure all logic is modular and supports event-driven GUI interactions.
 
 class UVSim:
     def __init__(self):
@@ -34,9 +34,11 @@ def run_simulator():
             opcode, operand = divmod(instruction, 100)
 
             if opcode == 10:  # READ
-                self.memory[operand] = int(input("Enter a number: "))  # === DEV 2: Replace with GUI input
+                if self.input_value is not None:
+                    self.memory[operand] = self.input_value
+                    self.input_value = None
             elif opcode == 11:  # WRITE
-                print(self.memory[operand])  # === DEV 2: Replace with GUI output
+                self.output.append(self.memory[operand])
             elif opcode == 20:  # LOAD
                 self.accumulator = self.memory[operand]
             elif opcode == 21:  # STORE
@@ -47,7 +49,7 @@ def run_simulator():
                 self.accumulator -= self.memory[operand]
             elif opcode == 32:  # DIVIDE
                 if self.memory[operand] == 0:
-                    print("Error: Division by zero")
+                    self.output.append("error: Division by zero")
                     self.running = False
                     continue
                 self.accumulator //= self.memory[operand]
@@ -76,9 +78,9 @@ def run_simulator():
 
 if __name__ == "__main__":
     # === DEV 1 (Jonah) ===
-    # TODO: Replace command-line input/output with GUI elements.
-    # TODO: Create input fields for loading files and displaying memory state.
-    # TODO: Integrate 'Run Program' button to trigger UVSim execution.
+    # todo: Replace command-line input/output with GUI elements.
+    # todo: Create input fields for loading files and displaying memory state.
+    # todo: Integrate 'Run Program' button to trigger UVSim execution.
 
     sim = UVSim()
     filename = input("Enter program file: ")  # === DEV 1: Replace with file picker in GUI
@@ -87,8 +89,8 @@ if __name__ == "__main__":
 
 
 # === DEV 3 (James) ===
-# TODO: Expand unit tests to include GUI interactions.
-# TODO: Lead SRS documentation and ensure team follows functional requirements.
+# todo: Expand unit tests to include GUI interactions.
+# todo: Lead SRS documentation and ensure team follows functional requirements.
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):
