@@ -1,13 +1,15 @@
+import tkinter as tk
+from tkinter import filedialog,messagebox
 import unittest
 
 # === PM (Cortland) ===
-# todo: Oversee project progress, ensure SRS collection and final merge.
-# todo: Manage GitHub branches and final submission.
-# todo: Coordinate with team for code integration.
+# TODO: Oversee project progress, ensure SRS collection and final merge.
+# TODO: Manage GitHub branches and final submission.
+# TODO: Coordinate with team for code integration.
 
 # === DEV 2 (Gaby) ===
-# todo: Refactor UVSim to support GUI integration (decouple input/output).
-# todo: Ensure all logic is modular and supports event-driven GUI interactions.
+# TODO: Refactor UVSim to support GUI integration (decouple input/output).
+# TODO: Ensure all logic is modular and supports event-driven GUI interactions.
 
 class UVSim:
     def __init__(self):
@@ -15,6 +17,25 @@ class UVSim:
         self.accumulator = 0  # Single register
         self.instruction_counter = 0  # Program counter
         self.running = True
+        self.input_value = None # Store input for GUI integration
+        self.output = [] # Store output for GUI retrieval
+
+    def set_input_value(self, value):
+        """Sets input value for the next READ operation"""
+        self.input_value = value
+
+    def get_output(self):
+        """Returns all output stored"""
+        return self.output
+
+    def load_program(self, filename):
+        """Loads a program from a file into memory"""
+        with open(filename, 'r') as file:
+            for i, line in enumerate(file):
+                if int(line.strip()) == -99999:
+                    break
+                self.memory [i] = int(line.strip())
+
 # run_simulator() function - Jonah
 def run_simulator():
     pass
@@ -75,22 +96,86 @@ def run_simulator():
                 break
 
             self.instruction_counter += 1
+class UVSimGUI:
+    def __init__(self,root):
+        self.root=root
+        self.root.title("UVSim GUI")
+        self.sim=UVSim()
 
+        self.file_label=tk.Label(root,text="Program File:")
+        self.file_label.pack(pady=5)
+
+        self.file_entry = tk.Entry(root, width=40)
+        self.file_entry.pack(pady=5)
+        
+        self.browse_button = tk.Button(root, text="Browse", command=self.browse_file)
+        self.browse_button.pack(pady=5)
+        
+                # Input field for READ operation
+        self.input_label = tk.Label(root, text="Input Value (for READ operation):")
+        self.input_label.pack(pady=5)
+        
+        self.input_entry = tk.Entry(root, width=20)
+        self.input_entry.pack(pady=5)
+
+          # Run button
+        self.run_button = tk.Button(root, text="Run Program", command=self.run_program)
+        self.run_button.pack(pady=10)
+
+        # Output display
+        self.output_label = tk.Label(root, text="Output:")
+        self.output_label.pack(pady=5)
+
+        self.output_text = tk.Text(root, height=10, width=50)
+        self.output_text.pack(pady=5)
+
+def browse_file(self):
+    filename=filedialog.askopenfilename(filetypes=[("Text Files","*.txt")])
+    if filename:
+        self.file_entry.delete(0,tk.END)
+        self.file_entry.insert(0,filename)
+
+def run_program(self):
+    self.output_text.delete(1.0,tk.END)
+    filename=self.file_entry.get()
+    if not filename:
+        messagebox.showerror("Error","Please select a program file.")
+        return
+
+    try:
+        self.sim.load_program(filename)
+    except Exception as e:
+        messagebox.showerror("Error", f"failed to load program: {e}")
+        return
+    input_value=self.input_entry.get()
+    if input_value:
+        try:
+            self.sim.set_input_value(int(input_value))
+        except ValueError:
+            messagebox.showerror("Error","Input value must be an integer.")
+            return
+        self.sim.execute()
+        output=self.sim.get_output()
+        for line in output:
+            self.output_text.insert(tk.END,f"{line}\n")
 if __name__ == "__main__":
     # === DEV 1 (Jonah) ===
-    # todo: Replace command-line input/output with GUI elements.
-    # todo: Create input fields for loading files and displaying memory state.
-    # todo: Integrate 'Run Program' button to trigger UVSim execution.
+    # TODO: Replace command-line input/output with GUI elements.
+    # TODO: Create input fields for loading files and displaying memory state.
+    # TODO: Integrate 'Run Program' button to trigger UVSim execution.
+    root=tk.Tk()
+    gui=UVSimGUI(root)
+    root.mainloop()
 
-    sim = UVSim()
-    filename = input("Enter program file: ")  # === DEV 1: Replace with file picker in GUI
-    sim.load_program(filename)
-    sim.execute()
 
 
 # === DEV 3 (James) ===
-# todo: Expand unit tests to include GUI interactions.
-# todo: Lead SRS documentation and ensure team follows functional requirements.
+# TODO: Expand unit tests to include GUI interactions.
+# TODO: Lead SRS documentation and ensure team follows functional requirements.
+
+# validate() function - Jonah
+def validate():
+    pass
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):
