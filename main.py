@@ -16,6 +16,24 @@ class UVSim:
         self.accumulator = 0  # Single register
         self.instruction_counter = 0  # Program counter
         self.running = True
+        self.input_value = None # Store input for GUI integration
+        self.output = [] # Store output for GUI retrieval
+
+    def set_input_value(self, value):
+        """Sets input value for the next READ operation"""
+        self.input_value = value
+
+    def get_output(self):
+        """Returns all output stored"""
+        return self.output
+
+    def load_program(self, filename):
+        """Loads a program from a file into memory"""
+        with open(filename, 'r') as file:
+            for i, line in enumerate(file):
+                if int(line.strip()) == -99999:
+                    break
+                self.memory [i] = int(line.strip())
 =======
 # run_simulator() function - Jonah
 def run_simulator():
@@ -37,9 +55,11 @@ def run_simulator():
             opcode, operand = divmod(instruction, 100)
 
             if opcode == 10:  # READ
-                self.memory[operand] = int(input("Enter a number: "))  # === DEV 2: Replace with GUI input
+                if self.input_value is not None:
+                    self.memory[operand] = self.input_value
+                    self.input_value = None
             elif opcode == 11:  # WRITE
-                print(self.memory[operand])  # === DEV 2: Replace with GUI output
+                self.output.append(self.memory[operand])
             elif opcode == 20:  # LOAD
                 self.accumulator = self.memory[operand]
             elif opcode == 21:  # STORE
@@ -50,7 +70,7 @@ def run_simulator():
                 self.accumulator -= self.memory[operand]
             elif opcode == 32:  # DIVIDE
                 if self.memory[operand] == 0:
-                    print("Error: Division by zero")
+                    self.output.append("error: Division by zero")
                     self.running = False
                     continue
                 self.accumulator //= self.memory[operand]
