@@ -36,10 +36,6 @@ class UVSim:
                     break
                 self.memory [i] = int(line.strip())
 
-# run_simulator() function - Jonah
-def run_simulator():
-    pass
-
     def load_program(self, filename):
         """Loads a program from a file into memory."""
         with open(filename, 'r') as file:
@@ -96,6 +92,7 @@ def run_simulator():
                 break
 
             self.instruction_counter += 1
+
 class UVSimGUI:
     def __init__(self,root):
         self.root=root
@@ -129,35 +126,36 @@ class UVSimGUI:
         self.output_text = tk.Text(root, height=10, width=50)
         self.output_text.pack(pady=5)
 
-def browse_file(self):
-    filename=filedialog.askopenfilename(filetypes=[("Text Files","*.txt")])
-    if filename:
-        self.file_entry.delete(0,tk.END)
-        self.file_entry.insert(0,filename)
+    def browse_file(self):
+        filename=filedialog.askopenfilename(filetypes=[("Text Files","*.txt")])
+        if filename:
+            self.file_entry.delete(0,tk.END)
+            self.file_entry.insert(0,filename)
 
-def run_program(self):
-    self.output_text.delete(1.0,tk.END)
-    filename=self.file_entry.get()
-    if not filename:
-        messagebox.showerror("Error","Please select a program file.")
-        return
-
-    try:
-        self.sim.load_program(filename)
-    except Exception as e:
-        messagebox.showerror("Error", f"failed to load program: {e}")
-        return
-    input_value=self.input_entry.get()
-    if input_value:
-        try:
-            self.sim.set_input_value(int(input_value))
-        except ValueError:
-            messagebox.showerror("Error","Input value must be an integer.")
+    def run_program(self):
+        self.output_text.delete(1.0,tk.END)
+        filename=self.file_entry.get()
+        if not filename:
+            messagebox.showerror("Error","Please select a program file.")
             return
-        self.sim.execute()
-        output=self.sim.get_output()
-        for line in output:
-            self.output_text.insert(tk.END,f"{line}\n")
+
+        try:
+            self.sim.load_program(filename)
+        except Exception as e:
+            messagebox.showerror("Error", f"failed to load program: {e}")
+            return
+        input_value=self.input_entry.get()
+        if input_value:
+            try:
+                self.sim.set_input_value(int(input_value))
+            except ValueError:
+                messagebox.showerror("Error","Input value must be an integer.")
+                return
+            self.sim.execute()
+            output=self.sim.get_output()
+            for line in output:
+                self.output_text.insert(tk.END,f"{line}\n")
+
 if __name__ == "__main__":
     # === DEV 1 (Jonah) ===
     # TODO: Replace command-line input/output with GUI elements.
@@ -166,8 +164,6 @@ if __name__ == "__main__":
     root=tk.Tk()
     gui=UVSimGUI(root)
     root.mainloop()
-
-
 
 # === DEV 3 (James) ===
 # TODO: Expand unit tests to include GUI interactions.
@@ -180,6 +176,8 @@ def validate():
 class TestUVSim(unittest.TestCase):
     def setUp(self):
         self.sim = UVSim()
+        self.root = tk.Tk()
+        self.gui = UVSimGUI(self.root)
 
     def test_load(self):
         self.sim.memory[10] = 25
@@ -254,3 +252,9 @@ class TestUVSim(unittest.TestCase):
         self.sim.memory[0] = 2099  # Try to access memory location 99
         self.sim.execute()
         self.assertEqual(self.sim.accumulator, 0)  # Should load 0 from empty memory
+    
+    def test_gui_browse(self):
+        self.gui.browse_file()
+        filename = self.gui.file_entry.get()
+        filename = filename[-9:len(filename)]
+        self.assertEqual(filename, "Test1.txt")
