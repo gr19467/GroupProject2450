@@ -9,18 +9,15 @@ import unittest
 # TODO: Refactor UVSim to support GUI integration (decouple input/output).
 # TODO: Ensure all logic is modular and supports event-driven GUI interactions.
 
-<<<<<<< HEAD
 class UVSim:
     def __init__(self):
         self.memory = [0] * 100  # 100-word memory
         self.accumulator = 0  # Single register
         self.instruction_counter = 0  # Program counter
         self.running = True
-=======
 # run_simulator() function - Jonah
 def run_simulator():
     pass
->>>>>>> origin/main
 
     def load_program(self, filename):
         """Loads a program from a file into memory."""
@@ -89,15 +86,9 @@ if __name__ == "__main__":
     sim.execute()
 
 
-<<<<<<< HEAD
 # === DEV 3 (James) ===
 # TODO: Expand unit tests to include GUI interactions.
 # TODO: Lead SRS documentation and ensure team follows functional requirements.
-=======
-# validate() function - Jonah
-def validate():
-    pass
->>>>>>> origin/main
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):
