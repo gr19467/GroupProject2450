@@ -36,9 +36,11 @@
 
 To run the unit tests, execute:
 
-```bash
+```
 python -m unittest uvsim.py
 ```
+
+When prompted to select a file, select "Test1.txt"
 
 This will automatically verify all functionalities.
 
