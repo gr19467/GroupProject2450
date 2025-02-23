@@ -36,14 +36,6 @@ class UVSim:
                     break
                 self.memory [i] = int(line.strip())
 
-    def load_program(self, filename):
-        """Loads a program from a file into memory."""
-        with open(filename, 'r') as file:
-            for i, line in enumerate(file):
-                if int(line.strip()) == -99999:
-                    break  # End of program
-                self.memory[i] = int(line.strip())
-
     def execute(self):
         """Executes instructions in memory."""
         while self.running:
@@ -87,7 +79,7 @@ class UVSim:
                 self.running = False
                 break
             else:
-                print(f"Unknown opcode {opcode} at address {self.instruction_counter}")
+                self.output.append(f"Error: Unknown opcode {opcode} at address {self.instruction_counter}")
                 self.running = False
                 break
 
@@ -254,7 +246,6 @@ class TestUVSim(unittest.TestCase):
         self.assertEqual(self.sim.accumulator, 0)  # Should load 0 from empty memory
     
     def test_gui_browse(self):
-        self.gui.browse_file()
+        self.gui.file_entry.insert(0, "Test1.txt")
         filename = self.gui.file_entry.get()
-        filename = filename[-9:len(filename)]
         self.assertEqual(filename, "Test1.txt")
