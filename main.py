@@ -163,7 +163,15 @@ if __name__ == "__main__":
 
 # validate() function - Jonah
 def validate():
-    pass
+    input_value = gui.input_entry.get()
+    if input_value:
+        try:
+            int(input_value)
+            return True
+        except ValueError:
+            messagebox.showerror("Error", "Input value must be an integer.")
+            return False
+    return True
 
 class TestUVSim(unittest.TestCase):
     def setUp(self):
