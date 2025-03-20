@@ -2,15 +2,6 @@ import tkinter as tk
 from tkinter import filedialog,messagebox
 import unittest
 
-# === PM (Cortland) ===
-# TODO: Oversee project progress, ensure SRS collection and final merge.
-# TODO: Manage GitHub branches and final submission.
-# TODO: Coordinate with team for code integration.
-
-# === DEV 2 (Gaby) ===
-# TODO: Refactor UVSim to support GUI integration (decouple input/output).
-# TODO: Ensure all logic is modular and supports event-driven GUI interactions.
-
 class UVSim:
     def __init__(self):
         self.memory = [0] * 100  # 100-word memory
@@ -85,6 +76,16 @@ class UVSim:
 
             self.instruction_counter += 1
 
+#=========James=========
+#Implement system in gui for user to select color
+#Implement selected color into gui
+#=========Cortland======
+#Implement code editor text box into GUI
+#=========Jonah=========
+#Modify browse_file function to pull program text file content into GUI code editor
+#=========Gaby==========
+#Modify load_program function to instead load the contents of the GUI code editor
+
 class UVSimGUI:
     def __init__(self,root):
         self.root=root
@@ -149,19 +150,10 @@ class UVSimGUI:
                 self.output_text.insert(tk.END,f"{line}\n")
 
 if __name__ == "__main__":
-    # === DEV 1 (Jonah) ===
-    # TODO: Replace command-line input/output with GUI elements.
-    # TODO: Create input fields for loading files and displaying memory state.
-    # TODO: Integrate 'Run Program' button to trigger UVSim execution.
     root=tk.Tk()
     gui=UVSimGUI(root)
     root.mainloop()
 
-# === DEV 3 (James) ===
-# TODO: Expand unit tests to include GUI interactions.
-# TODO: Lead SRS documentation and ensure team follows functional requirements.
-
-# validate() function - Jonah
 def validate():
     input_value = gui.input_entry.get()
     if input_value:
