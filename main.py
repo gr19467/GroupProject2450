@@ -19,13 +19,19 @@ class UVSim:
         """Returns all output stored"""
         return self.output
 
-    def load_program(self, filename):
-        """Loads a program from a file into memory"""
-        with open(filename, 'r') as file:
-            for i, line in enumerate(file):
+    def load_program(self, code_text):
+        """Loads a program from the GUI code editor into memory"""
+        lines = code_text.strip().split("\n")
+        self.memory = [0] * 100 # reset memory
+        for i, line in enumerate(lines):
+            try:
                 if int(line.strip()) == -99999:
                     break
-                self.memory [i] = int(line.strip())
+                self.memory[i] = int(line.strip())
+            except ValueError:
+                self.output.append(f"Error: Invalid instruction at line {i+1}: {line}")
+                self.running = False
+                return
 
     def execute(self):
         """Executes instructions in memory."""
