@@ -141,6 +141,10 @@ class UVSimGUI:
         if filename:
             self.file_entry.delete(0,tk.END)
             self.file_entry.insert(0,filename)
+            with open(filename, 'r') as file:
+                content = file.read()
+                self.code_editor.delete(1.0, tk.END)
+                self.code_editor.insert(tk.END, content)
 
     def run_program(self):
         self.output_text.delete(1.0,tk.END)
@@ -182,11 +186,6 @@ class UVSimGUI:
             for widget in self.root.winfo_children():
                 if isinstance(widget, tk.Button):
                     widget.config(bg=self.alt_color)
-
-if __name__ == "__main__":
-    root=tk.Tk()
-    gui=UVSimGUI(root)
-    root.mainloop()
 
 def validate():
     input_value = gui.input_entry.get()
@@ -283,3 +282,8 @@ class TestUVSim(unittest.TestCase):
         self.gui.file_entry.insert(0, "Test1.txt")
         filename = self.gui.file_entry.get()
         self.assertEqual(filename, "Test1.txt")
+
+if __name__ == "__main__":
+    root=tk.Tk()
+    gui=UVSimGUI(root)
+    root.mainloop()
