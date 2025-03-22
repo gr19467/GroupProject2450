@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog,messagebox
+from tkinter import filedialog, messagebox, colorchooser
 import unittest
 
 class UVSim:
@@ -90,34 +90,45 @@ class UVSimGUI:
     def __init__(self,root):
         self.root=root
         self.root.title("UVSim GUI")
+        self.primary_color = "#4C721D"
+        self.alt_color = "#FFFFFF"
+        self.root.configure(bg=self.primary_color)
         self.sim=UVSim()
 
-        self.file_label=tk.Label(root,text="Program File:")
+        self.file_label=tk.Label(root,text="Program File:", bg=self.primary_color)
         self.file_label.pack(pady=5)
 
         self.file_entry = tk.Entry(root, width=40)
         self.file_entry.pack(pady=5)
         
-        self.browse_button = tk.Button(root, text="Browse", command=self.browse_file)
+        self.browse_button = tk.Button(root, text="Browse", command=self.browse_file, bg=self.alt_color)
         self.browse_button.pack(pady=5)
         
                 # Input field for READ operation
-        self.input_label = tk.Label(root, text="Input Value (for READ operation):")
+        self.input_label = tk.Label(root, text="Input Value (for READ operation):", bg=self.primary_color)
         self.input_label.pack(pady=5)
         
         self.input_entry = tk.Entry(root, width=20)
         self.input_entry.pack(pady=5)
 
           # Run button
-        self.run_button = tk.Button(root, text="Run Program", command=self.run_program)
+        self.run_button = tk.Button(root, text="Run Program", command=self.run_program, bg=self.alt_color)
         self.run_button.pack(pady=10)
 
         # Output display
-        self.output_label = tk.Label(root, text="Output:")
+        self.output_label = tk.Label(root, text="Output:", bg=self.primary_color)
         self.output_label.pack(pady=5)
 
         self.output_text = tk.Text(root, height=10, width=50)
         self.output_text.pack(pady=5)
+        
+        #Button to change primary color
+        self.primary_color_button = tk.Button(root, text="Change Primary Color", command=self.change_primary_color, bg=self.alt_color)
+        self.primary_color_button.pack(pady=(10, 1))
+        
+        #Button to change alternate color
+        self.alt_color_button = tk.Button(root, text="Change Alternate Color", command=self.change_alt_color, bg=self.alt_color)
+        self.alt_color_button.pack(pady=10)
 
     def browse_file(self):
         filename=filedialog.askopenfilename(filetypes=[("Text Files","*.txt")])
@@ -148,6 +159,23 @@ class UVSimGUI:
             output=self.sim.get_output()
             for line in output:
                 self.output_text.insert(tk.END,f"{line}\n")
+    
+    def change_primary_color(self):
+        color = colorchooser.askcolor(title="Choose Color")
+        if color:
+            self.primary_color = color[1]
+            self.root.configure(bg=self.primary_color)
+            for widget in self.root.winfo_children():
+                if isinstance(widget, tk.Label):
+                    widget.config(bg=self.primary_color)
+    
+    def change_alt_color(self):
+        color = colorchooser.askcolor(title="Choose Color")
+        if color:
+            self.alt_color = color[1]
+            for widget in self.root.winfo_children():
+                if isinstance(widget, tk.Button):
+                    widget.config(bg=self.alt_color)
 
 if __name__ == "__main__":
     root=tk.Tk()
