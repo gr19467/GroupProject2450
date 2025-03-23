@@ -117,6 +117,21 @@ class UVSimGUI:
         self.input_entry = tk.Entry(root, width=20)
         self.input_entry.pack(pady=5)
 
+        # Add Code Editor Textbox
+        self.editor_label = tk.Label(root, text="Code Editor:", bg=self.primary_color)
+        self.editor_label.pack(pady=5)
+
+        # Frame for Text + Scrollbar
+        editor_frame = tk.Frame(root)
+        editor_frame.pack(pady=5)
+
+        self.code_editor = tk.Text(editor_frame, height=15, width=50, wrap=tk.NONE)
+        self.code_editor.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar_y = tk.Scrollbar(editor_frame, orient=tk.VERTICAL, command=self.code_editor.yview)
+        scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+        self.code_editor.config(yscrollcommand=scrollbar_y.set)
+
           # Run button
         self.run_button = tk.Button(root, text="Run Program", command=self.run_program, bg=self.alt_color)
         self.run_button.pack(pady=10)
