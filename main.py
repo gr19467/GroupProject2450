@@ -2,6 +2,33 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, colorchooser
 import unittest
 
+# === Scrum Master (Gaby) ===
+# TODO Update design document to reflect changes
+# TODO Update unit tests, use cases, requirements
+# TODO Update README.md
+
+# === James ===
+# Memory Expansion and Addressing
+# TODO Modify internal memory to 250 lines (000-250)
+# TODO Update memory validation to reject addresses outside range
+# TODO Ensure application can handle six digit math operations correctly
+
+# === Cortland ===
+# From 4 to 6 digits
+# TODO Implement support for 6-digit word format files
+# TODO Implement a converter from 4 to 6 digits
+# TODO Prevent mixing formats within a file
+
+# === Jonah ===
+# File and GUI changes
+# TODO Design and implement a way to handle multiple files in the same app instance (GUI tabs)
+# TODO Allow editing, switching, and running each file independently
+# TODO Ensure file maximum of 250 lines
+# TODO Fix teacher comment from last milestone:
+# (3) -5 I have trouble repeating this function on my computer.
+# "The client wants to be able to save and load files from any user-specified folder
+# (not just a fixed default system folder)."
+
 class UVSim:
     def __init__(self):
         self.memory = [0] * 100  # 100-word memory
