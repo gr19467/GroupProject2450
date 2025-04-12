@@ -2,6 +2,33 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, colorchooser
 import unittest
 
+# === Scrum Master (Gaby) ===
+# TODO Update design document to reflect changes
+# TODO Update unit tests, use cases, requirements
+# TODO Update README.md
+
+# === James ===
+# Memory Expansion and Addressing
+# TODO Modify internal memory to 250 lines (000-250)
+# TODO Update memory validation to reject addresses outside range
+# TODO Ensure application can handle six digit math operations correctly
+
+# === Cortland ===
+# From 4 to 6 digits
+# TODO Implement support for 6-digit word format files
+# TODO Implement a converter from 4 to 6 digits
+# TODO Prevent mixing formats within a file
+
+# === Jonah ===
+# File and GUI changes
+# TODO Design and implement a way to handle multiple files in the same app instance (GUI tabs)
+# TODO Allow editing, switching, and running each file independently
+# TODO Ensure file maximum of 250 lines
+# TODO Fix teacher comment from last milestone:
+# (3) -5 I have trouble repeating this function on my computer.
+# "The client wants to be able to save and load files from any user-specified folder
+# (not just a fixed default system folder)."
+
 class UVSim:
     def __init__(self):
         self.memory = [0] * 100  # 100-word memory
@@ -20,16 +47,45 @@ class UVSim:
         return self.output
 
     def load_program(self, code_text):
-        """Loads a program from the GUI code editor into memory"""
+        """Loads and validates a 4-digit or 6-digit program into memory"""
         lines = code_text.strip().split("\n")
-        self.memory = [0] * 100 # reset memory
+
+        if len(lines) > 250:
+            self.output.append("Error: Too many lines. Max is 250.")
+            self.running = False
+            return
+
+        self.memory = [0] * 250  # Expand memory
+        self.running = True
+
+        digit_format = None  # Track if it's 4 or 6 digit format
+
         for i, line in enumerate(lines):
-            try:
-                if int(line.strip()) == -99999:
-                    break
-                self.memory[i] = int(line.strip())
-            except ValueError:
-                self.output.append(f"Error: Invalid instruction at line {i+1}: {line}")
+            line = line.strip()
+            if line == "":
+                continue
+            if line == "-99999" or line == "-099999":  # handle both format endings
+                break
+
+            if not line.lstrip("+-").isdigit():
+                self.output.append(f"Error: Invalid numeric input at line {i+1}: {line}")
+                self.running = False
+                return
+
+            # Determine and lock file format
+            if digit_format is None:
+                digit_format = len(line)
+            elif len(line) != digit_format:
+                self.output.append(f"Error: Mixed formats detected at line {i+1}.")
+                self.running = False
+                return
+
+            if digit_format == 4:
+                self.memory[i] = int(line)
+            elif digit_format == 6:
+                self.memory[i] = int(line)
+            else:
+                self.output.append(f"Error: Unsupported instruction length at line {i+1}.")
                 self.running = False
                 return
 
@@ -151,6 +207,9 @@ class UVSimGUI:
         self.alt_color_button = tk.Button(root, text="Change Alternate Color", command=self.change_alt_color, bg=self.alt_color)
         self.alt_color_button.pack(pady=10)
 
+        self.convert_button = tk.Button(root, text="Convert 4→6 Digits", command=self.convert_4_to_6, bg=self.alt_color)
+        self.convert_button.pack(pady=5)
+
     def browse_file(self):
         filename=filedialog.askopenfilename(filetypes=[("Text Files","*.txt")])
         if filename:
@@ -160,6 +219,33 @@ class UVSimGUI:
                 content = file.read()
                 self.code_editor.delete(1.0, tk.END)
                 self.code_editor.insert(tk.END, content)
+
+    def convert_4_to_6(self):
+        """Converts 4-digit lines in the code editor to 6-digit lines"""
+        lines = self.code_editor.get("1.0", tk.END).strip().split("\n")
+        converted_lines = []
+
+        for line in lines:
+            line = line.strip()
+            if line == "":
+                continue
+            if line == "-99999":
+                converted_lines.append("-099999")
+                continue
+            if not line.lstrip("+-").isdigit():
+                messagebox.showerror("Error", f"Invalid instruction: {line}")
+                return
+            if len(line) != 4:
+                messagebox.showerror("Error", f"Line is not 4-digit: {line}")
+                return
+
+            sign = "+" if not line.startswith("-") else "-"
+            number = line.lstrip("+-")
+            converted_lines.append(f"{sign}00{number}")
+
+        self.code_editor.delete("1.0", tk.END)
+        self.code_editor.insert(tk.END, "\n".join(converted_lines))
+        messagebox.showinfo("Success", "File converted to 6-digit format.")
 
     def run_program(self):
         self.output_text.delete(1.0,tk.END)
