@@ -31,7 +31,7 @@ import unittest
 
 class UVSim:
     def __init__(self):
-        self.memory = [0] * 100  # 100-word memory
+        self.memory = [0] * 250  # 100-word memory
         self.accumulator = 0  # Single register
         self.instruction_counter = 0  # Program counter
         self.running = True
@@ -54,9 +54,6 @@ class UVSim:
             self.output.append("Error: Too many lines. Max is 250.")
             self.running = False
             return
-
-        self.memory = [0] * 250  # Expand memory
-        self.running = True
 
         digit_format = None  # Track if it's 4 or 6 digit format
 
@@ -93,7 +90,7 @@ class UVSim:
         """Executes instructions in memory."""
         while self.running:
             instruction = self.memory[self.instruction_counter]
-            opcode, operand = divmod(instruction, 100)
+            opcode, operand = divmod(instruction, 10000)
 
             if opcode == 10:  # READ
                 if self.input_value is not None:
@@ -137,16 +134,6 @@ class UVSim:
                 break
 
             self.instruction_counter += 1
-
-#=========James=========
-#Implement system in gui for user to select color
-#Implement selected color into gui
-#=========Cortland======
-#Implement code editor text box into GUI
-#=========Jonah=========
-#Modify browse_file function to pull program text file content into GUI code editor
-#=========Gaby==========
-#Modify load_program function to instead load the contents of the GUI code editor
 
 class UVSimGUI:
     def __init__(self,root):
