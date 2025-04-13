@@ -11,26 +11,33 @@
 
 ## Input File Format
 
-- Each line in the input file should contain a **signed four-digit number**.
-- Instructions are stored sequentially in memory.
+- Each line in the input file should contain a **signed six-digit number**.
+- Instructions are stored sequentially in memory (up to 250 lines).
 - The **last line** of the file should be `-99999` to mark the end.
 
 ## Supported Commands
 
 | Opcode | Instruction | Description                          |
-| ------ | ----------- | ------------------------------------ |
-| 10XX   | READ        | Read input into memory[XX]           |
-| 11XX   | WRITE       | Print memory[XX]                     |
-| 20XX   | LOAD        | Load memory[XX] into accumulator     |
-| 21XX   | STORE       | Store accumulator into memory[XX]    |
-| 30XX   | ADD         | Add memory[XX] to accumulator        |
-| 31XX   | SUBTRACT    | Subtract memory[XX] from accumulator |
-| 32XX   | DIVIDE      | Divide accumulator by memory[XX]     |
-| 33XX   | MULTIPLY    | Multiply accumulator by memory[XX]   |
-| 40XX   | BRANCH      | Jump to memory[XX]                   |
-| 41XX   | BRANCHNEG   | Jump if accumulator is negative      |
-| 42XX   | BRANCHZERO  | Jump if accumulator is zero          |
-| 43XX   | HALT        | Stop execution                       |
+|--------| ----------- | ------------------------------------ |
+| 010XXX | READ        | Read input into memory[XX]           |
+| 011XXX | WRITE       | Print memory[XX]                     |
+| 020XXX | LOAD        | Load memory[XX] into accumulator     |
+| 021XXX | STORE       | Store accumulator into memory[XX]    |
+| 030XXX | ADD         | Add memory[XX] to accumulator        |
+| 031XXX | SUBTRACT    | Subtract memory[XX] from accumulator |
+| 032XXX | DIVIDE      | Divide accumulator by memory[XX]     |
+| 033XXX | MULTIPLY    | Multiply accumulator by memory[XX]   |
+| 040XXX | BRANCH      | Jump to memory[XX]                   |
+| 041XXX | BRANCHNEG   | Jump if accumulator is negative      |
+| 042XXX | BRANCHZERO  | Jump if accumulator is zero          |
+| 043XXX | HALT        | Stop execution                       |
+
+## File Format Compatibility
+UVSIM now supports both 4-digit and 6-digit instruction formats.
+
+- Files in 4-digit format can be **converted to** 6-digit using the built-in conversion tool.
+- Converted files have leading zeroes added to the opcode and address.
+- All instructions within a file must match the same format (mixing 4-digit and 6-digit is not allowed)
 
 ## Running Unit Tests
 
@@ -48,8 +55,5 @@ This will automatically verify all functionalities.
 
 - **Division by zero** is detected and will halt execution.
 - **Invalid opcodes** will print an error and stop execution.
-<<<<<<< HEAD
-- **Out-of-bounds memory access** is prevented.
-=======
 - **Out-of-bounds memory access** is prevented.
 >>>>>>> origin/main

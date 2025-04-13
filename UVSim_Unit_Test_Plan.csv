@@ -11,3 +11,6 @@ test_branchneg,Tests branching on negative accumulator,BRANCHNEG Operation,"Accu
 test_branchzero,Tests branching on zero accumulator,BRANCHZERO Operation,"Accumulator=0, Memory[0]=4205, Memory[5]=4300",Instruction Counter=5,Branch on zero executed
 test_invalid_opcode,Tests handling of invalid opcodes,Invalid Opcode,Memory[0]=9999,Simulation stops,Unknown opcode error handled
 test_memory_bounds,Tests memory bounds access,Memory Operation,Memory[0]=2099 (accessing memory[99]),Accumulator=0,Accessed valid memory location
+convert_4_to_6_digits,Converts a 4-digit file to 6-digit format,Convert Old Format File,Test1.txt,All instructions have leading zeroes added,Converted file has valid 6-digit instructions only
+reject_mixed_format,Runs a file with mixed formats,Mixing Formats,A file with mixed formats,Error: Mixed formats,Error handled
+reject_over250,Tests out-of-bounds memory,Out-of-Bounds,A file with more than 250 lines,Error: Memory overflow,Execution stops as expected
