@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, colorchooser
+from tkinter import filedialog, messagebox, colorchooser, ttk
 import unittest
 
 # === Scrum Master (Gaby) ===
@@ -20,34 +20,30 @@ import unittest
 # TODO Prevent mixing formats within a file
 
 # === Jonah ===
-# File and GUI changes
-# TODO Design and implement a way to handle multiple files in the same app instance (GUI tabs)
-# TODO Allow editing, switching, and running each file independently
-# TODO Ensure file maximum of 250 lines
-# TODO Fix teacher comment from last milestone:
-# (3) -5 I have trouble repeating this function on my computer.
-# "The client wants to be able to save and load files from any user-specified folder
-# (not just a fixed default system folder)."
+# DONE Design and implement a way to handle multiple files in the same app instance (GUI tabs)
+# DONE Allow editing, switching, and running each file independently
+# DONE Ensure file maximum of 250 lines
+# DONE Fix teacher comment from last milestone:
+#      (3) -5 I have trouble repeating this function on my computer.
+#      "The client wants to be able to save and load files from any user-specified folder
+#      (not just a fixed default system folder)."
 
 class UVSim:
     def __init__(self):
-        self.memory = [0] * 250  # 100-word memory
-        self.accumulator = 0  # Single register
-        self.instruction_counter = 0  # Program counter
+        self.memory = [0] * 250
+        self.accumulator = 0
+        self.instruction_counter = 0
         self.running = True
-        self.input_value = None # Store input for GUI integration
-        self.output = [] # Store output for GUI retrieval
+        self.input_value = None
+        self.output = []
 
     def set_input_value(self, value):
-        """Sets input value for the next READ operation"""
         self.input_value = value
 
     def get_output(self):
-        """Returns all output stored"""
         return self.output
 
     def load_program(self, code_text):
-        """Loads and validates a 4-digit or 6-digit program into memory"""
         lines = code_text.strip().split("\n")
 
         if len(lines) > 250:
@@ -55,13 +51,13 @@ class UVSim:
             self.running = False
             return
 
-        digit_format = None  # Track if it's 4 or 6 digit format
+        digit_format = None
 
         for i, line in enumerate(lines):
             line = line.strip()
             if line == "":
                 continue
-            if line == "-99999" or line == "-099999":  # handle both format endings
+            if line == "-99999" or line == "-099999":
                 break
 
             if not line.lstrip("+-").isdigit():
@@ -69,7 +65,6 @@ class UVSim:
                 self.running = False
                 return
 
-            # Determine and lock file format
             if digit_format is None:
                 digit_format = len(line)
             elif len(line) != digit_format:
@@ -87,45 +82,44 @@ class UVSim:
                 return
 
     def execute(self):
-        """Executes instructions in memory."""
         while self.running:
             instruction = self.memory[self.instruction_counter]
             opcode, operand = divmod(instruction, 10000)
 
-            if opcode == 10:  # READ
+            if opcode == 10:
                 if self.input_value is not None:
                     self.memory[operand] = self.input_value
                     self.input_value = None
-            elif opcode == 11:  # WRITE
+            elif opcode == 11:
                 self.output.append(self.memory[operand])
-            elif opcode == 20:  # LOAD
+            elif opcode == 20:
                 self.accumulator = self.memory[operand]
-            elif opcode == 21:  # STORE
+            elif opcode == 21:
                 self.memory[operand] = self.accumulator
-            elif opcode == 30:  # ADD
+            elif opcode == 30:
                 self.accumulator += self.memory[operand]
-            elif opcode == 31:  # SUBTRACT
+            elif opcode == 31:
                 self.accumulator -= self.memory[operand]
-            elif opcode == 32:  # DIVIDE
+            elif opcode == 32:
                 if self.memory[operand] == 0:
                     self.output.append("error: Division by zero")
                     self.running = False
                     continue
                 self.accumulator //= self.memory[operand]
-            elif opcode == 33:  # MULTIPLY
+            elif opcode == 33:
                 self.accumulator *= self.memory[operand]
-            elif opcode == 40:  # BRANCH
+            elif opcode == 40:
                 self.instruction_counter = operand
                 continue
-            elif opcode == 41:  # BRANCHNEG
+            elif opcode == 41:
                 if self.accumulator < 0:
                     self.instruction_counter = operand
                     continue
-            elif opcode == 42:  # BRANCHZERO
+            elif opcode == 42:
                 if self.accumulator == 0:
                     self.instruction_counter = operand
                     continue
-            elif opcode == 43:  # HALT
+            elif opcode == 43:
                 self.running = False
                 break
             else:
@@ -136,80 +130,70 @@ class UVSim:
             self.instruction_counter += 1
 
 class UVSimGUI:
-    def __init__(self,root):
-        self.root=root
+    def __init__(self, root):
+        self.root = root
         self.root.title("UVSim GUI")
         self.primary_color = "#4C721D"
         self.alt_color = "#FFFFFF"
         self.root.configure(bg=self.primary_color)
-        self.sim=UVSim()
 
-        self.file_label=tk.Label(root,text="Program File:", bg=self.primary_color)
-        self.file_label.pack(pady=5)
+        self.notebook = ttk.Notebook(root)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+        self.tabs = []
+        self.sim_instances = []
 
-        self.file_entry = tk.Entry(root, width=40)
-        self.file_entry.pack(pady=5)
-        
-        self.browse_button = tk.Button(root, text="Browse", command=self.browse_file, bg=self.alt_color)
-        self.browse_button.pack(pady=5)
-        
-                # Input field for READ operation
-        self.input_label = tk.Label(root, text="Input Value (for READ operation):", bg=self.primary_color)
-        self.input_label.pack(pady=5)
-        
-        self.input_entry = tk.Entry(root, width=20)
-        self.input_entry.pack(pady=5)
+        self.create_new_tab()
 
-        # Add Code Editor Textbox
-        self.editor_label = tk.Label(root, text="Code Editor:", bg=self.primary_color)
-        self.editor_label.pack(pady=5)
+        self.bottom_frame = tk.Frame(root, bg=self.primary_color)
+        self.bottom_frame.pack(fill=tk.X, side=tk.BOTTOM)
 
-        # Frame for Text + Scrollbar
-        editor_frame = tk.Frame(root)
-        editor_frame.pack(pady=5)
+        self.input_label = tk.Label(self.bottom_frame, text="Input Value:", bg=self.primary_color)
+        self.input_label.pack(side=tk.LEFT, padx=5)
 
-        self.code_editor = tk.Text(editor_frame, height=15, width=50, wrap=tk.NONE)
-        self.code_editor.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.input_entry = tk.Entry(self.bottom_frame, width=10)
+        self.input_entry.pack(side=tk.LEFT, padx=5)
 
-        scrollbar_y = tk.Scrollbar(editor_frame, orient=tk.VERTICAL, command=self.code_editor.yview)
-        scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
-        self.code_editor.config(yscrollcommand=scrollbar_y.set)
+        self.run_button = tk.Button(self.bottom_frame, text="Run Program", command=self.run_program, bg=self.alt_color)
+        self.run_button.pack(side=tk.LEFT, padx=5)
 
-          # Run button
-        self.run_button = tk.Button(root, text="Run Program", command=self.run_program, bg=self.alt_color)
-        self.run_button.pack(pady=10)
+        self.browse_button = tk.Button(self.bottom_frame, text="Open File", command=self.browse_file, bg=self.alt_color)
+        self.browse_button.pack(side=tk.LEFT, padx=5)
 
-        # Output display
-        self.output_label = tk.Label(root, text="Output:", bg=self.primary_color)
-        self.output_label.pack(pady=5)
+        self.convert_button = tk.Button(self.bottom_frame, text="Convert 4→6 Digits", command=self.convert_4_to_6, bg=self.alt_color)
+        self.convert_button.pack(side=tk.LEFT, padx=5)
 
-        self.output_text = tk.Text(root, height=10, width=50)
-        self.output_text.pack(pady=5)
-        
-        #Button to change primary color
-        self.primary_color_button = tk.Button(root, text="Change Primary Color", command=self.change_primary_color, bg=self.alt_color)
-        self.primary_color_button.pack(pady=(10, 1))
-        
-        #Button to change alternate color
-        self.alt_color_button = tk.Button(root, text="Change Alternate Color", command=self.change_alt_color, bg=self.alt_color)
-        self.alt_color_button.pack(pady=10)
+        self.primary_color_button = tk.Button(self.bottom_frame, text="Primary Color", command=self.change_primary_color, bg=self.alt_color)
+        self.primary_color_button.pack(side=tk.LEFT, padx=5)
 
-        self.convert_button = tk.Button(root, text="Convert 4→6 Digits", command=self.convert_4_to_6, bg=self.alt_color)
-        self.convert_button.pack(pady=5)
+        self.alt_color_button = tk.Button(self.bottom_frame, text="Alt Color", command=self.change_alt_color, bg=self.alt_color)
+        self.alt_color_button.pack(side=tk.LEFT, padx=5)
+
+    def create_new_tab(self, content=""):
+        tab = tk.Frame(self.notebook)
+        editor = tk.Text(tab, wrap=tk.NONE)
+        output = tk.Text(tab, height=10, wrap=tk.NONE, bg="#f0f0f0")
+
+        editor.pack(fill=tk.BOTH, expand=True)
+        output.pack(fill=tk.BOTH)
+
+        self.notebook.add(tab, text=f"File {len(self.tabs)+1}")
+        self.tabs.append((editor, output))
+        self.sim_instances.append(UVSim())
+
+        if content:
+            editor.insert(tk.END, content)
 
     def browse_file(self):
-        filename=filedialog.askopenfilename(filetypes=[("Text Files","*.txt")])
+        filename = filedialog.askopenfilename(filetypes=[("Text Files", "*.txt")])
         if filename:
-            self.file_entry.delete(0,tk.END)
-            self.file_entry.insert(0,filename)
             with open(filename, 'r') as file:
                 content = file.read()
-                self.code_editor.delete(1.0, tk.END)
-                self.code_editor.insert(tk.END, content)
+                self.create_new_tab(content)
 
     def convert_4_to_6(self):
-        """Converts 4-digit lines in the code editor to 6-digit lines"""
-        lines = self.code_editor.get("1.0", tk.END).strip().split("\n")
+        current_tab = self.notebook.index(self.notebook.select())
+        editor, _ = self.tabs[current_tab]
+        lines = editor.get("1.0", tk.END).strip().split("\n")
         converted_lines = []
 
         for line in lines:
@@ -219,59 +203,60 @@ class UVSimGUI:
             if line == "-99999":
                 converted_lines.append("-099999")
                 continue
-            if not line.lstrip("+-").isdigit():
-                messagebox.showerror("Error", f"Invalid instruction: {line}")
+            if not line.lstrip("+-").isdigit() or len(line) != 4:
+                messagebox.showerror("Error", f"Invalid 4-digit line: {line}")
                 return
-            if len(line) != 4:
-                messagebox.showerror("Error", f"Line is not 4-digit: {line}")
-                return
-
             sign = "+" if not line.startswith("-") else "-"
             number = line.lstrip("+-")
             converted_lines.append(f"{sign}00{number}")
 
-        self.code_editor.delete("1.0", tk.END)
-        self.code_editor.insert(tk.END, "\n".join(converted_lines))
+        editor.delete("1.0", tk.END)
+        editor.insert(tk.END, "\n".join(converted_lines))
         messagebox.showinfo("Success", "File converted to 6-digit format.")
 
     def run_program(self):
-        self.output_text.delete(1.0,tk.END)
-        filename=self.file_entry.get()
-        if not filename:
-            messagebox.showerror("Error","Please select a program file.")
+        current_tab = self.notebook.index(self.notebook.select())
+        editor, output = self.tabs[current_tab]
+        sim = self.sim_instances[current_tab]
+
+        output.delete("1.0", tk.END)
+        code = editor.get("1.0", tk.END)
+
+        if code.strip() == "":
+            messagebox.showerror("Error", "No code to execute.")
             return
 
-        try:
-            self.sim.load_program(filename)
-        except Exception as e:
-            messagebox.showerror("Error", f"failed to load program: {e}")
-            return
-        input_value=self.input_entry.get()
-        if input_value:
+        input_val = self.input_entry.get()
+        if input_val:
             try:
-                self.sim.set_input_value(int(input_value))
+                sim.set_input_value(int(input_val))
             except ValueError:
-                messagebox.showerror("Error","Input value must be an integer.")
+                messagebox.showerror("Error", "Input must be an integer.")
                 return
-            self.sim.execute()
-            output=self.sim.get_output()
-            for line in output:
-                self.output_text.insert(tk.END,f"{line}\n")
-    
+
+        sim.__init__()  # reset state
+        sim.load_program(code)
+        sim.execute()
+
+        for line in sim.get_output():
+            output.insert(tk.END, f"{line}\n")
+
     def change_primary_color(self):
         color = colorchooser.askcolor(title="Choose Color")
         if color:
             self.primary_color = color[1]
             self.root.configure(bg=self.primary_color)
-            for widget in self.root.winfo_children():
-                if isinstance(widget, tk.Label):
-                    widget.config(bg=self.primary_color)
-    
+            self.bottom_frame.configure(bg=self.primary_color)
+            self.input_label.configure(bg=self.primary_color)
+            for child in self.root.winfo_children():
+                if isinstance(child, tk.Label):
+                    child.config(bg=self.primary_color)
+
     def change_alt_color(self):
         color = colorchooser.askcolor(title="Choose Color")
         if color:
             self.alt_color = color[1]
-            for widget in self.root.winfo_children():
+            for widget in self.bottom_frame.winfo_children():
                 if isinstance(widget, tk.Button):
                     widget.config(bg=self.alt_color)
 
@@ -365,13 +350,14 @@ class TestUVSim(unittest.TestCase):
         self.sim.memory[0] = 2099  # Try to access memory location 99
         self.sim.execute()
         self.assertEqual(self.sim.accumulator, 0)  # Should load 0 from empty memory
-    
+
     def test_gui_browse(self):
+        self.gui.file_entry = tk.Entry(self.gui.root)
         self.gui.file_entry.insert(0, "Test1.txt")
         filename = self.gui.file_entry.get()
         self.assertEqual(filename, "Test1.txt")
 
 if __name__ == "__main__":
-    root=tk.Tk()
-    gui=UVSimGUI(root)
+    root = tk.Tk()
+    gui = UVSimGUI(root)
     root.mainloop()
